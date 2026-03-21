@@ -51,20 +51,31 @@ Your credentials never touch disk: the master token is stored in the **macOS Key
 
 ## Quick Start
 
-**1. Clone and authorise**
+**1. Install**
+
+```bash
+uv tool install git+https://github.com/kud/mcp-google-keep
+```
+
+Or clone if you prefer:
 
 ```bash
 git clone https://github.com/kud/mcp-google-keep.git
-cd mcp-google-keep
-uv run python setup.py
+cd mcp-google-keep && uv sync
+```
+
+**2. Authorise**
+
+```bash
+mcp-google-keep-setup
 ```
 
 The setup script walks you through a browser-based OAuth flow and saves your credentials to the macOS Keychain. Ready in about 2 minutes.
 
-**2. Add to Claude Code**
+**3. Add to Claude Code**
 
 ```bash
-claude mcp add google-keep -- uv --directory ~/Projects/mcp-google-keep run python server.py
+claude mcp add google-keep mcp-google-keep
 ```
 
 **3. Ask Claude anything**
@@ -117,14 +128,30 @@ claude mcp add google-keep -- uv --directory ~/Projects/mcp-google-keep run pyth
 claude mcp add google-keep -- uv --directory /path/to/mcp-google-keep run python server.py
 ```
 
-Or add `.mcp.json` to the project root (already included in this repo):
+Or if installed via `uv tool install`, use the entry point directly:
 
 ```json
 {
   "mcpServers": {
     "google-keep": {
-      "command": "uv",
-      "args": ["run", "python", "server.py"]
+      "command": "mcp-google-keep"
+    }
+  }
+}
+```
+
+Or with `uvx` (ephemeral — no install required):
+
+```json
+{
+  "mcpServers": {
+    "google-keep": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/kud/mcp-google-keep",
+        "mcp-google-keep"
+      ]
     }
   }
 }
@@ -233,7 +260,11 @@ Google Keep has no official API for personal Gmail accounts. This server uses th
 ### One-time setup
 
 ```bash
-uv run python setup.py
+# After uv tool install:
+mcp-google-keep-setup
+
+# From source:
+uv run python keep_setup.py
 ```
 
 The script will:
@@ -283,7 +314,7 @@ uv run python server.py
 ```
 mcp-google-keep/
 ├── server.py        # FastMCP server — all 11 tools
-├── setup.py         # Interactive Keychain credential setup
+├── keep_setup.py    # Interactive Keychain credential setup
 ├── pyproject.toml   # Python project & dependencies
 ├── uv.lock          # Locked dependency tree
 ├── .mcp.json        # Local MCP config (gitignored)
@@ -294,7 +325,7 @@ mcp-google-keep/
 
 | Command                   | Description                   |
 | ------------------------- | ----------------------------- |
-| `uv run python setup.py`  | Run the credential setup flow |
+| `mcp-google-keep-setup`   | Run the credential setup flow |
 | `uv run python server.py` | Start the MCP server          |
 | `uv sync`                 | Install / sync dependencies   |
 
@@ -320,7 +351,7 @@ mcp-google-keep/
 
 **`No credentials found` error**
 
-- Run `uv run python setup.py`
+- Run `mcp-google-keep-setup`
 
 **`oauth_token` missing from DevTools**
 
@@ -329,7 +360,7 @@ mcp-google-keep/
 
 **Token expired or invalid**
 
-- Re-run `uv run python setup.py` and choose to overwrite
+- Re-run `mcp-google-keep-setup` and choose to overwrite
 
 **Where are the logs?**
 

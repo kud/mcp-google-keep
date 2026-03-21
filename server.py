@@ -245,5 +245,9 @@ def delete_label(name: str, confirm: bool = False) -> dict:
     return {"deleted": name}
 
 
-if __name__ == "__main__":
+def main():
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()

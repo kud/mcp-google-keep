@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
 [project]
 name = "mcp-google-keep"
 version = "2.0.0"
@@ -9,3 +13,10 @@ dependencies = [
     "keyring",
     "rich",
 ]
+
+[project.scripts]
+mcp-google-keep = "server:main"
+mcp-google-keep-setup = "keep_setup:main"
+
+[tool.setuptools]
+py-modules = ["server", "keep_setup"]
