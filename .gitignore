@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.mcp.json
+.claude/
+.venv/
+.env*
+__pycache__/
+*.pyc
