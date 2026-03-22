@@ -105,6 +105,7 @@ claude mcp add google-keep mcp-google-keep
 | `create_text_note` | Create a plain-text note with optional title                                            |
 | `create_list_note` | Create a checklist note with initial items                                              |
 | `update_note`      | Update title, text, pin, archive, colour, or add / remove labels                        |
+| `restore_note`     | Restore a trashed note                                                                  |
 | `delete_note`      | Move to trash — requires `confirm: true`                                                |
 
 ### List Items
@@ -113,6 +114,9 @@ claude mcp add google-keep mcp-google-keep
 | ------------------- | --------------------------------------------------------- |
 | `add_list_item`     | Append a single item to an existing checklist             |
 | `update_list_items` | Replace all items in a checklist (full state replacement) |
+| `sort_list_items`   | Sort checklist items alphabetically                       |
+| `indent_list_item`  | Nest a list item under a parent item                      |
+| `dedent_list_item`  | Remove indentation from a nested list item                |
 
 ### Labels
 
@@ -120,9 +124,17 @@ claude mcp add google-keep mcp-google-keep
 | -------------- | ---------------------------------------------------------------------- |
 | `list_labels`  | List all labels                                                        |
 | `create_label` | Create a new label                                                     |
+| `rename_label` | Rename an existing label                                               |
 | `delete_label` | Delete a label and remove it from all notes — requires `confirm: true` |
 
-**Total: 11 Tools**
+### Collaborators
+
+| Tool                  | Description                                |
+| --------------------- | ------------------------------------------ |
+| `add_collaborator`    | Share a note with another user by email    |
+| `remove_collaborator` | Remove a collaborator from a note by email |
+
+**Total: 18 Tools**
 
 ---
 

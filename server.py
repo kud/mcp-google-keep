@@ -51,9 +51,10 @@ def serialise_note(note: gkeepapi.node.TopLevelNode) -> dict:
             "updated": note.timestamps.updated.isoformat() if note.timestamps.updated else None,
         },
     }
+    base["collaborators"] = list(note.collaborators.all())
     if isinstance(note, gkeepapi.node.List):
         base["items"] = [
-            {"text": item.text, "checked": item.checked}
+            {"id": item.id, "text": item.text, "checked": item.checked, "indented": item.indented}
             for item in note.items
             if not item.deleted
         ]
@@ -121,6 +122,18 @@ def create_text_note(text: str, title: str = "") -> dict:
 def create_list_note(items: list[dict], title: str = "") -> dict:
     """Create a new checklist note in Google Keep. Each item: {text: str, checked?: bool}"""
     note = keep.createList(title, [(i["text"], i.get("checked", False)) for i in items])
+    keep.sync()
+    return serialise_note(note)
+
+
+@mcp.tool()
+def restore_note(id: str) -> dict:
+    """Restore a trashed Google Keep note."""
+    keep.sync()
+    note = keep.get(id)
+    if note is None:
+        raise ValueError(f"Note not found: {id}")
+    note.undelete()
     keep.sync()
     return serialise_note(note)
 
@@ -196,6 +209,60 @@ def add_list_item(id: str, text: str, checked: bool = False) -> dict:
 
 
 @mcp.tool()
+def sort_list_items(id: str) -> dict:
+    """Sort items in a Google Keep checklist note alphabetically."""
+    keep.sync()
+    note = keep.get(id)
+    if note is None:
+        raise ValueError(f"Note not found: {id}")
+    if not isinstance(note, gkeepapi.node.List):
+        raise ValueError(f"Note {id} is not a list note")
+    note.sort_items()
+    keep.sync()
+    return serialise_note(note)
+
+
+@mcp.tool()
+def indent_list_item(note_id: str, item_id: str, parent_item_id: str) -> dict:
+    """Nest a list item under a parent item in a Google Keep checklist. Use item IDs from list_notes or get_note."""
+    keep.sync()
+    note = keep.get(note_id)
+    if note is None:
+        raise ValueError(f"Note not found: {note_id}")
+    if not isinstance(note, gkeepapi.node.List):
+        raise ValueError(f"Note {note_id} is not a list note")
+    item = next((i for i in note.items if i.id == item_id), None)
+    parent = next((i for i in note.items if i.id == parent_item_id), None)
+    if item is None:
+        raise ValueError(f"Item not found: {item_id}")
+    if parent is None:
+        raise ValueError(f"Parent item not found: {parent_item_id}")
+    parent.indent(item)
+    keep.sync()
+    return serialise_note(note)
+
+
+@mcp.tool()
+def dedent_list_item(note_id: str, item_id: str, parent_item_id: str) -> dict:
+    """Remove indentation from a nested list item in a Google Keep checklist. Use item IDs from list_notes or get_note."""
+    keep.sync()
+    note = keep.get(note_id)
+    if note is None:
+        raise ValueError(f"Note not found: {note_id}")
+    if not isinstance(note, gkeepapi.node.List):
+        raise ValueError(f"Note {note_id} is not a list note")
+    item = next((i for i in note.items if i.id == item_id), None)
+    parent = next((i for i in note.items if i.id == parent_item_id), None)
+    if item is None:
+        raise ValueError(f"Item not found: {item_id}")
+    if parent is None:
+        raise ValueError(f"Parent item not found: {parent_item_id}")
+    parent.dedent(item)
+    keep.sync()
+    return serialise_note(note)
+
+
+@mcp.tool()
 def update_list_items(id: str, items: list[dict]) -> dict:
     """Replace all items in a Google Keep checklist note. Each item: {text: str, checked?: bool}"""
     keep.sync()
@@ -229,6 +296,44 @@ def create_label(name: str) -> dict:
     label = keep.createLabel(name)
     keep.sync()
     return serialise_label(label)
+
+
+@mcp.tool()
+def rename_label(name: str, new_name: str) -> dict:
+    """Rename an existing label in Google Keep."""
+    keep.sync()
+    label = keep.findLabel(name)
+    if label is None:
+        raise ValueError(f"Label not found: {name}")
+    label.name = new_name
+    keep.sync()
+    return serialise_label(label)
+
+
+# ─── Collaborators ───
+
+@mcp.tool()
+def add_collaborator(id: str, email: str) -> dict:
+    """Share a Google Keep note with another user by email."""
+    keep.sync()
+    note = keep.get(id)
+    if note is None:
+        raise ValueError(f"Note not found: {id}")
+    note.collaborators.add(email)
+    keep.sync()
+    return serialise_note(note)
+
+
+@mcp.tool()
+def remove_collaborator(id: str, email: str) -> dict:
+    """Remove a collaborator from a Google Keep note by email."""
+    keep.sync()
+    note = keep.get(id)
+    if note is None:
+        raise ValueError(f"Note not found: {id}")
+    note.collaborators.remove(email)
+    keep.sync()
+    return serialise_note(note)
 
 
 @mcp.tool()
