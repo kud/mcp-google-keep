@@ -12,8 +12,8 @@ KEYCHAIN_SERVICE = "mcp-google-keep"
 
 
 def load_credentials() -> tuple[str, str]:
-    email = os.environ.get("GOOGLE_KEEP_EMAIL")
-    master_token = os.environ.get("GOOGLE_KEEP_MASTER_TOKEN")
+    email = os.environ.get("MCP_GOOGLE_KEEP_EMAIL")
+    master_token = os.environ.get("MCP_GOOGLE_KEEP_MASTER_TOKEN")
     if email and master_token:
         return email, master_token
 

@@ -302,8 +302,8 @@ The script will:
 ### Alternative: environment variables
 
 ```bash
-export GOOGLE_KEEP_EMAIL="you@gmail.com"
-export GOOGLE_KEEP_MASTER_TOKEN="aas_et/..."
+export MCP_GOOGLE_KEEP_EMAIL="you@gmail.com"
+export MCP_GOOGLE_KEEP_MASTER_TOKEN="aas_et/..."
 uv run python server.py
 ```
 
