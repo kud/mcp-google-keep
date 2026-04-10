@@ -1,6 +1,8 @@
 {
-  "mcp-google-keep": {
-    "command": "uv",
-    "args": ["run", "server.py"]
+  "mcpServers": {
+    "mcp-google-keep": {
+      "command": "uv",
+      "args": ["run", "server.py"]
+    }
   }
 }
