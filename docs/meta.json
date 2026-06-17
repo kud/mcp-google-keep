@@ -1,0 +1,10 @@
+{
+  "title": "mcp-google-keep",
+  "pages": [
+    "index",
+    "installation",
+    "authentication",
+    "tools",
+    "troubleshooting"
+  ]
+}

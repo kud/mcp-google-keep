@@ -1,0 +1,61 @@
+---
+title: Authentication
+description: The one-time Google credential setup — exchange an OAuth token for a long-lived master token stored in the macOS Keychain.
+---
+
+Google Keep has no official API for personal Gmail accounts. This server uses
+the **private sync protocol** via
+[gkeepapi](https://github.com/kiwiz/gkeepapi) +
+[gpsoauth](https://github.com/simon-weber/gpsoauth).
+
+Authentication is a one-time step: you exchange a short-lived OAuth token for a
+long-lived **master token**, which is stored in the macOS Keychain under the
+service name `mcp-google-keep`.
+
+## One-time setup
+
+```bash
+# After uv tool install:
+mcp-google-keep-setup
+
+# From source:
+uv run python keep_setup.py
+```
+
+The script will:
+
+1. Ask for your Google account email.
+2. Open `accounts.google.com/EmbeddedSetup` in your browser.
+3. Sign in — ignore the infinite loader, that's expected.
+4. Open DevTools (F12) → **Application** → **Cookies** →
+   **accounts.google.com**.
+5. Find `oauth_token`, double-click its value, and copy it.
+6. Paste it into the terminal.
+7. Exchange it for a long-lived master token.
+8. Save it to the macOS Keychain under `mcp-google-keep`.
+
+> **Note:** `oauth_token` is an `HttpOnly` cookie — it only appears in the
+> DevTools **Application** panel, not the Console.
+
+## Alternative: environment variables
+
+If you'd rather not use the Keychain (for example, in CI or a container), supply
+the credentials directly:
+
+```bash
+export MCP_GOOGLE_KEEP_EMAIL="you@gmail.com"
+export MCP_GOOGLE_KEEP_MASTER_TOKEN="aas_et/..."
+uv run python server.py
+```
+
+When both variables are set, they take precedence over the Keychain.
+
+## Security
+
+- Credentials live in the **macOS Keychain** — never written to disk.
+- The master token grants full Google account access — treat it like a
+  password.
+- Revoke it at
+  [myaccount.google.com/permissions](https://myaccount.google.com/permissions)
+  if it's ever compromised.
+- `.mcp.json` is gitignored — never committed even if it contains config.

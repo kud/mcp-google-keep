@@ -1,0 +1,94 @@
+---
+title: Introduction
+description: Search, create, and manage your Google Keep notes directly from Claude, Cursor, or any MCP-compatible AI assistant.
+---
+
+**mcp-google-keep** gives your AI assistant full read/write access to your
+Google Keep notes — list, search, create, label, and organise, all from a
+natural-language prompt.
+
+Google Keep has no official API for personal accounts. This server uses
+[gkeepapi](https://github.com/kiwiz/gkeepapi) — a battle-tested Python library
+that speaks Keep's private sync protocol — so your assistant can reach notes
+that the public Workspace API can't.
+
+Your credentials never touch disk: the master token is stored in the **macOS
+Keychain**.
+
+## Features
+
+- **List & search** notes by text, label, colour, or state (pinned, archived,
+  trashed).
+- **Create** text notes and checklist notes.
+- **Manage list items** — add, sort, indent/dedent, or replace all items.
+- **Full label support** — list, create, rename, delete, assign, and remove
+  labels.
+- **Colour filters** — find all your red, blue, or yellow notes.
+- **Collaborators** — share notes with other users by email.
+- **Credentials in macOS Keychain** — nothing written to disk.
+- **Destructive actions** require an explicit `confirm: true`.
+- **18 tools total** — covering the full gkeepapi surface.
+
+## Quick start
+
+**1. Install**
+
+```bash
+uv tool install git+https://github.com/kud/mcp-google-keep
+```
+
+Or clone if you prefer:
+
+```bash
+git clone https://github.com/kud/mcp-google-keep.git
+cd mcp-google-keep && uv sync
+```
+
+**2. Authorise**
+
+```bash
+mcp-google-keep-setup
+```
+
+The setup script walks you through a browser-based flow and saves your
+credentials to the macOS Keychain. Ready in about two minutes. See
+[Authentication](/projects/mcp-google-keep/docs/authentication) for the full
+walkthrough.
+
+**3. Add to Claude Code**
+
+```bash
+claude mcp add google-keep mcp-google-keep
+```
+
+**4. Ask Claude anything**
+
+> _"Search my Keep notes for 'grocery list'"_
+> _"Create a shopping list with milk, eggs, and bread"_
+> _"Pin my Ideas note and colour it yellow"_
+> _"Show me all my red notes"_
+
+## Example conversations
+
+| Prompt                                        | What happens                                           |
+| --------------------------------------------- | ------------------------------------------------------ |
+| _"Show me all my notes"_                      | Lists all non-trashed notes                            |
+| _"Search my notes for 'recipe'"_              | Finds notes containing "recipe"                        |
+| _"Show me my pinned yellow notes"_            | `list_notes(pinned=True, colors=["YELLOW"])`           |
+| _"Create a shopping list: milk, eggs, bread"_ | Creates a checklist note with three items              |
+| _"Add 'butter' to my shopping list"_          | Calls `add_list_item` on the existing note             |
+| _"Check off 'milk'"_                          | `update_list_items` with updated checked states        |
+| _"Label my Ideas note with 'work'"_           | `update_note(add_labels=["work"])`                     |
+| _"What labels do I have?"_                    | `list_labels()`                                        |
+| _"Archive all my travel notes"_               | Finds travel notes, calls `update_note(archived=True)` |
+| _"Delete note abc123"_                        | `delete_note(confirm=True)` after you confirm          |
+
+## Next steps
+
+- [Installation](/projects/mcp-google-keep/docs/installation) — set up the
+  server in Claude Code, Claude Desktop, Cursor, Windsurf, or VSCode.
+- [Authentication](/projects/mcp-google-keep/docs/authentication) — the
+  one-time Google credential flow.
+- [Tools](/projects/mcp-google-keep/docs/tools) — the full 18-tool reference.
+- [Troubleshooting](/projects/mcp-google-keep/docs/troubleshooting) — fixes for
+  common issues.

@@ -1,0 +1,138 @@
+---
+title: Installation
+description: Install and register mcp-google-keep in Claude Code, Claude Desktop, Cursor, Windsurf, or VSCode.
+---
+
+mcp-google-keep is a Python project managed with [uv](https://docs.astral.sh/uv/)
+and requires **Python ≥ 3.11**.
+
+## Install the server
+
+```bash
+uv tool install git+https://github.com/kud/mcp-google-keep
+```
+
+Or clone and sync from source:
+
+```bash
+git clone https://github.com/kud/mcp-google-keep.git
+cd mcp-google-keep && uv sync
+```
+
+Before the server will run, complete the one-time credential setup described in
+[Authentication](/projects/mcp-google-keep/docs/authentication).
+
+## Claude Code CLI (recommended)
+
+```bash
+claude mcp add google-keep -- uv --directory /path/to/mcp-google-keep run python server.py
+```
+
+Or, if installed via `uv tool install`, use the entry point directly:
+
+```json
+{
+  "mcpServers": {
+    "google-keep": {
+      "command": "mcp-google-keep"
+    }
+  }
+}
+```
+
+Or with `uvx` (ephemeral — no install required):
+
+```json
+{
+  "mcpServers": {
+    "google-keep": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/kud/mcp-google-keep",
+        "mcp-google-keep"
+      ]
+    }
+  }
+}
+```
+
+## Claude Desktop (macOS)
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "google-keep": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/mcp-google-keep",
+        "run",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}
+```
+
+## Cursor
+
+Add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "google-keep": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/mcp-google-keep",
+        "run",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}
+```
+
+## Windsurf
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "google-keep": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/mcp-google-keep",
+        "run",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}
+```
+
+## VSCode (Cline / Roo)
+
+```json
+{
+  "google-keep": {
+    "command": "uv",
+    "args": [
+      "--directory",
+      "/path/to/mcp-google-keep",
+      "run",
+      "python",
+      "server.py"
+    ]
+  }
+}
+```

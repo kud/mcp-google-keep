@@ -1,0 +1,30 @@
+---
+title: Troubleshooting
+description: Fixes for common mcp-google-keep issues — startup, credentials, missing tokens, and logs.
+---
+
+## Server not appearing in Claude
+
+- Verify the `--directory` path is absolute and correct.
+- Run `uv run python server.py` directly to check for startup errors.
+- Restart Claude Desktop or reload the MCP client.
+
+## `No credentials found` error
+
+- Run `mcp-google-keep-setup` to complete the credential setup. See
+  [Authentication](/projects/mcp-google-keep/docs/authentication).
+
+## `oauth_token` missing from DevTools
+
+- It's `HttpOnly` — only visible under **Application → Cookies**, not the
+  Console.
+- Sign in again if it's missing; it appears right after authentication.
+
+## Token expired or invalid
+
+- Re-run `mcp-google-keep-setup` and choose to overwrite.
+
+## Where are the logs?
+
+- All server output goes to stderr.
+- Claude Desktop: `~/Library/Logs/Claude/mcp-server-google-keep.log`.
