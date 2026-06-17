@@ -1,5 +1,5 @@
 ---
-title: Authentication
+title: 🔐 Authentication
 description: The one-time Google credential setup — exchange an OAuth token for a long-lived master token stored in the macOS Keychain.
 ---
 
@@ -12,7 +12,7 @@ Authentication is a one-time step: you exchange a short-lived OAuth token for a
 long-lived **master token**, which is stored in the macOS Keychain under the
 service name `mcp-google-keep`.
 
-## One-time setup
+## 🔐 One-time setup
 
 ```bash
 # After uv tool install:
@@ -37,7 +37,7 @@ The script will:
 > **Note:** `oauth_token` is an `HttpOnly` cookie — it only appears in the
 > DevTools **Application** panel, not the Console.
 
-## Alternative: environment variables
+## 🔧 Alternative: environment variables
 
 If you'd rather not use the Keychain (for example, in CI or a container), supply
 the credentials directly:
@@ -50,7 +50,7 @@ uv run python server.py
 
 When both variables are set, they take precedence over the Keychain.
 
-## Security
+## 🔒 Security
 
 - Credentials live in the **macOS Keychain** — never written to disk.
 - The master token grants full Google account access — treat it like a
